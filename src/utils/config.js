@@ -14,7 +14,7 @@ const getApiUrl = () => {
 
   // Fallback for production if VITE_API_URL is not set
   // Replace with your actual backend URL after deployment
-  return "https://your-backend-url.onrender.com";
+  return "https://intouch-backend-163o.onrender.com";
 };
 
 const getSocketUrl = () => {
@@ -30,7 +30,7 @@ const getSocketUrl = () => {
 
   // Fallback for production if VITE_API_URL is not set
   // Replace with your actual backend URL after deployment
-  return "https://your-backend-url.onrender.com";
+  return "https://intouch-backend-163o.onrender.com";
 };
 
 export const API_URL = getApiUrl();
