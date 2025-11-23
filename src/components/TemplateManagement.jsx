@@ -6,8 +6,9 @@ import 'react-datepicker/dist/react-datepicker.css';
 import * as XLSX from 'xlsx';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
+import { API_URL, SOCKET_URL } from '../utils/config.js';
 
-const socket = io('http://localhost:5000'); // Adjust port if needed
+const socket = io(SOCKET_URL);
 
 const getToken = () => {
   // Try both 'token' and 'userToken' for backward compatibility
@@ -51,7 +52,7 @@ const TemplateManagement = () => {
     setSubmitting(true);
     try {
       for (const templateId of selectedTemplates) {
-        await fetch(`http://localhost:5000/api/templates/${templateId}`, {
+        await fetch(`${API_URL}/api/templates/${templateId}`, {
           method: 'DELETE',
           headers: { 
             Authorization: `Bearer ${getToken()}`,
@@ -78,7 +79,7 @@ const TemplateManagement = () => {
       return;
     }
     
-    fetch('http://localhost:5000/api/templates', {
+    fetch(`${API_URL}/api/templates`, {
       headers: { 
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json'
@@ -124,7 +125,7 @@ const TemplateManagement = () => {
       setLoadingLogs(false);
       return;
     }
-    fetch('http://localhost:5000/api/templates/audit-logs', {
+    fetch(`${API_URL}/api/templates/audit-logs`, {
       headers: { 
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json'
@@ -235,7 +236,7 @@ const TemplateManagement = () => {
     setSubmitting(true);
     try {
       const method = editTemplate ? 'PUT' : 'POST';
-      const url = editTemplate ? `http://localhost:5000/api/templates/${editTemplate._id}` : 'http://localhost:5000/api/templates';
+      const url = editTemplate ? `${API_URL}/api/templates/${editTemplate._id}` : `${API_URL}/api/templates`;
       const res = await fetch(url, {
         method,
         headers: {
@@ -259,7 +260,7 @@ const TemplateManagement = () => {
     if (!window.confirm(`Delete template "${template.name}"?`)) return;
     setSubmitting(true);
     try {
-      const res = await fetch(`http://localhost:5000/api/templates/${template._id}`, {
+      const res = await fetch(`${API_URL}/api/templates/${template._id}`, {
         method: 'DELETE',
         headers: { 
           Authorization: `Bearer ${getToken()}`,
@@ -315,7 +316,7 @@ const TemplateManagement = () => {
       for (const row of rows) {
         const [name, description, questions] = row.split(',');
         if (!name) continue;
-        await fetch('http://localhost:5000/api/templates', {
+        await fetch(`${API_URL}/api/templates`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
