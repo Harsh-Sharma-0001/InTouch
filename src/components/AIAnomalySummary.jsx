@@ -26,8 +26,16 @@ const AIAnomalySummary = () => {
     fetch(`${API_URL}/api/monitoring/anomalies`, {
       headers: token ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } : {}
     })
-      .then(res => {
-        if (!res.ok) throw new Error('Failed to fetch anomalies');
+      .then(async (res) => {
+        if (!res.ok) throw new Error(`Failed to fetch anomalies: ${res.status}`);
+        const contentType = res.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          const text = await res.text();
+          if (text.trim().startsWith('<!')) {
+            throw new Error('Server returned HTML instead of JSON. Check backend URL.');
+          }
+          return JSON.parse(text);
+        }
         return res.json();
       })
       .then(data => {
