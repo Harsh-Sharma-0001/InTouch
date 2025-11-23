@@ -20,8 +20,9 @@ import 'react-datepicker/dist/react-datepicker.css';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import * as XLSX from 'xlsx';
+import { API_URL, SOCKET_URL } from '../utils/config.js';
 
-const socket = io('http://localhost:5000');
+const socket = io(SOCKET_URL);
 
 const ChartsSection = () => {
   const [monthlyData, setMonthlyData] = useState([]);
@@ -54,10 +55,10 @@ const ChartsSection = () => {
     
     // Fetch real interview data
     Promise.all([
-      fetch('http://localhost:5000/api/interviews', {
+      fetch(`${API_URL}/api/interviews`, {
         headers: token ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } : {}
       }).then(res => res.json()).catch(() => []),
-      fetch('http://localhost:5000/api/dashboard/stats', {
+      fetch(`${API_URL}/api/dashboard/stats`, {
         headers: token ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } : {}
       }).then(res => res.json()).catch(() => ({}))
     ])
@@ -162,7 +163,7 @@ const ChartsSection = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('token') || localStorage.getItem('userToken');
-    fetch('http://localhost:5000/api/candidates', {
+    fetch(`${API_URL}/api/candidates`, {
       headers: token ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } : {}
     })
       .then(res => res.json())
@@ -179,7 +180,7 @@ const ChartsSection = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('token') || localStorage.getItem('userToken');
-    fetch('http://localhost:5000/api/interviews', {
+    fetch(`${API_URL}/api/interviews`, {
       headers: token ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } : {}
     })
       .then(res => res.json())
@@ -202,7 +203,7 @@ const ChartsSection = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('token') || localStorage.getItem('userToken');
-    fetch('http://localhost:5000/api/candidates', {
+    fetch(`${API_URL}/api/candidates`, {
       headers: token ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } : {}
     })
       .then(res => res.json())
