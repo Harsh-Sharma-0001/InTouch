@@ -24,6 +24,23 @@ import { API_URL, SOCKET_URL } from '../utils/config.js';
 
 const socket = io(SOCKET_URL);
 
+// Helper function to safely parse JSON responses
+const safeJsonParse = async (response) => {
+  const contentType = response.headers.get('content-type');
+  if (!contentType || !contentType.includes('application/json')) {
+    const text = await response.text();
+    if (text.trim().startsWith('<!')) {
+      throw new Error(`Server returned HTML instead of JSON. Check if backend is running at ${API_URL}`);
+    }
+    try {
+      return JSON.parse(text);
+    } catch (e) {
+      throw new Error(`Failed to parse response: ${text.substring(0, 100)}`);
+    }
+  }
+  return response.json();
+};
+
 const ChartsSection = () => {
   const [monthlyData, setMonthlyData] = useState([]);
   const [quarterlyData, setQuarterlyData] = useState([]);
@@ -51,16 +68,39 @@ const ChartsSection = () => {
 
   const fetchAnalytics = () => {
     setLoading(true);
+    setError(null);
     const token = localStorage.getItem('token') || localStorage.getItem('userToken');
     
     // Fetch real interview data
     Promise.all([
       fetch(`${API_URL}/api/interviews`, {
         headers: token ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } : {}
-      }).then(res => res.json()).catch(() => []),
+      })
+        .then(async (res) => {
+          if (!res.ok) {
+            throw new Error(`Failed to fetch interviews: ${res.status} ${res.statusText}`);
+          }
+          return safeJsonParse(res);
+        })
+        .catch((err) => {
+          console.error('Error fetching interviews:', err);
+          setError(err.message);
+          return [];
+        }),
       fetch(`${API_URL}/api/dashboard/stats`, {
         headers: token ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } : {}
-      }).then(res => res.json()).catch(() => ({}))
+      })
+        .then(async (res) => {
+          if (!res.ok) {
+            throw new Error(`Failed to fetch stats: ${res.status} ${res.statusText}`);
+          }
+          return safeJsonParse(res);
+        })
+        .catch((err) => {
+          console.error('Error fetching stats:', err);
+          setError(err.message);
+          return {};
+        })
     ])
       .then(([interviews, stats]) => {
         // Process interviews for monthly data
@@ -166,7 +206,12 @@ const ChartsSection = () => {
     fetch(`${API_URL}/api/candidates`, {
       headers: token ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } : {}
     })
-      .then(res => res.json())
+      .then(async (res) => {
+        if (!res.ok) {
+          throw new Error(`Failed to fetch candidates: ${res.status}`);
+        }
+        return safeJsonParse(res);
+      })
       .then(data => {
         // Count by status
         const stats = { applied: 0, interviewing: 0, offered: 0, hired: 0, rejected: 0 };
@@ -183,7 +228,12 @@ const ChartsSection = () => {
     fetch(`${API_URL}/api/interviews`, {
       headers: token ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } : {}
     })
-      .then(res => res.json())
+      .then(async (res) => {
+        if (!res.ok) {
+          throw new Error(`Failed to fetch interviews: ${res.status}`);
+        }
+        return safeJsonParse(res);
+      })
       .then(data => {
         // Aggregate by interviewer
         const stats = {};
@@ -198,7 +248,10 @@ const ChartsSection = () => {
         }
         setInterviewerStats(Object.values(stats));
       })
-      .catch(err => console.error('Error fetching interviews:', err));
+      .catch(err => {
+        console.error('Error fetching interviews:', err);
+        setError(err.message);
+      });
   }, []);
 
   useEffect(() => {
@@ -206,7 +259,12 @@ const ChartsSection = () => {
     fetch(`${API_URL}/api/candidates`, {
       headers: token ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } : {}
     })
-      .then(res => res.json())
+      .then(async (res) => {
+        if (!res.ok) {
+          throw new Error(`Failed to fetch candidates: ${res.status}`);
+        }
+        return safeJsonParse(res);
+      })
       .then(data => {
         // For each hired candidate, calculate time from createdAt to hired date (use updatedAt if status is hired)
         if (!Array.isArray(data)) {
