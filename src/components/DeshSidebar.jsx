@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { BarChart3, Calendar, Settings, Monitor, User } from 'lucide-react'
 import { useNavigate, Link, useLocation } from 'react-router-dom'
+import { API_URL } from '../utils/config.js'
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ const Sidebar = () => {
     if (!token) return;
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/verify-admin', {
+      const response = await fetch(`${API_URL}/api/auth/verify-admin`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
