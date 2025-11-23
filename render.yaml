@@ -1,4 +1,5 @@
 services:
+  # Backend Service
   - type: web
     name: intouch-backend
     env: node
@@ -20,6 +21,10 @@ services:
         sync: false
       - key: EMAIL_PASS
         sync: false
+      - key: EMAIL_SERVICE
+        value: gmail
+      - key: FRONTEND_URL
+        sync: false
       - key: AWS_ACCESS_KEY_ID
         sync: false
       - key: AWS_SECRET_ACCESS_KEY
@@ -29,3 +34,21 @@ services:
       - key: AWS_S3_BUCKET
         sync: false
 
+  # Frontend Service (Static Site)
+  - type: web
+    name: intouch-frontend
+    env: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        sync: false
+      - key: VITE_SOCKET_URL
+        sync: false
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
