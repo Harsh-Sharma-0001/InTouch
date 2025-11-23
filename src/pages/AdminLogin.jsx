@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Shield, Mail, Lock, AlertCircle, User } from 'lucide-react';
 import logo from '../assets/logo.jpg';
+import { API_URL } from '../utils/config.js';
 
 const AdminLogin = () => {
   const [name, setName] = useState('');
@@ -44,7 +45,7 @@ const AdminLogin = () => {
 
     try {
       // First, register the admin user
-      const registerResponse = await fetch('http://localhost:5000/api/auth/register', {
+      const registerResponse = await fetch(`${API_URL}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -70,7 +71,7 @@ const AdminLogin = () => {
         
         if (errorMessage.toLowerCase().includes('already exists') || errorMessage.toLowerCase().includes('user already')) {
           // User already exists, try to login
-          const loginResponse = await fetch('http://localhost:5000/api/auth/login', {
+          const loginResponse = await fetch(`${API_URL}/api/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email: email.trim(), password })
@@ -117,7 +118,7 @@ const AdminLogin = () => {
       // Registration successful, wait a moment then login automatically
       await new Promise(resolve => setTimeout(resolve, 500));
       
-      const loginResponse = await fetch('http://localhost:5000/api/auth/login', {
+      const loginResponse = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email.trim(), password })
