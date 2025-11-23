@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+import { SOCKET_URL } from '../utils/config.js';
 
-const socket = io('http://localhost:5000');
+const socket = io(SOCKET_URL);
 
 const ActivityTimeline = () => {
   const [activities, setActivities] = useState([]);
