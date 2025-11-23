@@ -6,8 +6,9 @@ import 'react-datepicker/dist/react-datepicker.css';
 import * as XLSX from 'xlsx';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
+import { API_URL, SOCKET_URL } from '../utils/config.js';
 
-const socket = io('http://localhost:5000'); // Adjust port if needed
+const socket = io(SOCKET_URL);
 
 const getToken = () => {
   // Try both 'token' and 'userToken' for backward compatibility
@@ -53,7 +54,7 @@ const UserManagement = () => {
     setSubmitting(true);
     try {
       for (const userId of selectedUsers) {
-        await fetch(`http://localhost:5000/api/auth/users/${userId}`, {
+         await fetch(`${API_URL}/api/auth/users/${userId}`, {
           method: 'DELETE',
           headers: { 
             Authorization: `Bearer ${getToken()}`,
@@ -77,7 +78,7 @@ const UserManagement = () => {
       for (const userId of selectedUsers) {
         const user = users.find((u) => u._id === userId);
         if (!user) continue;
-        await fetch(`http://localhost:5000/api/auth/users/${userId}`, {
+        await fetch(`${API_URL}/api/auth/users/${userId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -107,7 +108,7 @@ const UserManagement = () => {
     
     console.log('🔑 Fetching users with token:', token.substring(0, 20) + '...');
     
-    fetch('http://localhost:5000/api/auth/users', {
+    fetch(`${API_URL}/api/auth/users`, {
       headers: { 
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json'
@@ -153,7 +154,7 @@ const UserManagement = () => {
       setLoadingLogs(false);
       return;
     }
-    fetch('http://localhost:5000/api/auth/audit-logs', {
+    fetch(`${API_URL}/api/auth/audit-logs`, {
       headers: { 
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json'
@@ -241,7 +242,7 @@ const UserManagement = () => {
     e.preventDefault();
     setSubmitting(true);
     try {
-      const res = await fetch(`http://localhost:5000/api/auth/users/${editUser._id}`, {
+      const res = await fetch(`${API_URL}/api/auth/users/${editUser._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -265,7 +266,7 @@ const UserManagement = () => {
     if (!window.confirm(`Delete user ${user.email}?`)) return;
     setSubmitting(true);
     try {
-      const res = await fetch(`http://localhost:5000/api/auth/users/${user._id}`, {
+      const res = await fetch(`${API_URL}/api/auth/users/${user._id}`, {
         method: 'DELETE',
         headers: { 
           Authorization: `Bearer ${getToken()}`,
@@ -292,7 +293,7 @@ const UserManagement = () => {
     e.preventDefault();
     setSubmitting(true);
     try {
-      const res = await fetch('http://localhost:5000/api/auth/users', {
+      const res = await fetch(`${API_URL}/api/auth/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -342,7 +343,7 @@ const UserManagement = () => {
       for (const row of rows) {
         const [name, email, admin] = row.split(',');
         if (!name || !email) continue;
-        await fetch('http://localhost:5000/api/auth/users', {
+        await fetch(`${API_URL}/api/auth/users`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
