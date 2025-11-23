@@ -2,8 +2,10 @@ import React, { useEffect, useState, useRef } from 'react';
 import { io } from 'socket.io-client';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, AreaChart, Area } from 'recharts';
 import { AlertTriangle, Brain, TrendingUp, Activity } from 'lucide-react';
+import { API_URL, SOCKET_URL } from '../utils/config.js';
 
-const socket = io('http://localhost:5000');
+const socket = io(SOCKET_URL);
+
 const COLORS = ['#a78bfa', '#f87171', '#fbbf24', '#34d399', '#60a5fa', '#f472b6', '#facc15'];
 
 const getToken = () => {
@@ -21,7 +23,7 @@ const AIAnomalySummary = () => {
   const fetchAnomalies = () => {
     setLoading(true);
     const token = getToken();
-    fetch('http://localhost:5000/api/monitoring/anomalies', {
+    fetch(`${API_URL}/api/monitoring/anomalies`, {
       headers: token ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } : {}
     })
       .then(res => {
