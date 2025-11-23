@@ -23,7 +23,7 @@ const getApiUrl = () => {
       const backendName = hostname.replace('frontend', 'backend').replace('intouch-frontend', 'intouch-backend');
       return `https://${backendName}`;
     }
-    return 'https://intouch-backend.onrender.com'; // Default fallback
+    return 'https://intouch-backend-163o.onrender.com'; // Default fallback
   }
 
   // In development, use localhost
@@ -48,7 +48,7 @@ const getSocketUrl = () => {
       const backendName = hostname.replace('frontend', 'backend').replace('intouch-frontend', 'intouch-backend');
       return `https://${backendName}`;
     }
-    return 'https://intouch-backend.onrender.com';
+    return 'https://intouch-backend-163o.onrender.com';
   }
 
   // In development, use localhost
