@@ -305,6 +305,7 @@ import React, { useState, useEffect } from "react"; // Import useState and useEf
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import { BarChart3, Calendar, Monitor, Settings, User, Bell, LogOut } from "lucide-react"; // Added LogOut icon
 import logo from '../assets/logo.jpg';
+import { API_URL } from '../utils/config.js';
 
 const Sidebar = ({ role = "user" }) => {
   const location = useLocation();
@@ -345,7 +346,7 @@ const Sidebar = ({ role = "user" }) => {
     if (!token) return;
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/verify-admin', {
+      const response = await fetch(`${API_URL}/api/auth/verify-admin`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
