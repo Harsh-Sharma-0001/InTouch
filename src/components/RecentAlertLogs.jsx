@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, AreaChart, Area } from 'recharts';
 import { AlertCircle, Bell, Clock, TrendingUp } from 'lucide-react';
+import { API_URL, SOCKET_URL } from '../utils/config.js';
 
-const socket = io('http://localhost:5000');
+const socket = io(SOCKET_URL);
 
 const getToken = () => {
   return localStorage.getItem('token') || localStorage.getItem('userToken');
@@ -19,7 +20,7 @@ const RecentAlertLogs = () => {
   useEffect(() => {
     setLoading(true);
     const token = getToken();
-    fetch('http://localhost:5000/api/monitoring/alerts', {
+    fetch(`${API_URL}/api/monitoring/alerts`, {
       headers: token ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } : {}
     })
       .then(res => {
