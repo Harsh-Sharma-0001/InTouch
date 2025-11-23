@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Video } from 'lucide-react';
 import { io } from 'socket.io-client';
+import { SOCKET_URL } from '../utils/config.js';
 
-const socket = io('http://localhost:5000');
+const socket = io(SOCKET_URL);
 
 const LiveInterviewFeeds = () => {
   const [interviews, setInterviews] = useState([]);
